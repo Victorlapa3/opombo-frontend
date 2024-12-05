@@ -8,7 +8,7 @@ export function Avatar({ src, alt = '', size = 'sm' }: AvatarProps) {
   const sizeClasses = {
     sm: 'h-8 w-8 rounded-full outline outline-2 outline-offset-2 outline-primary object-cover',
     md: 'w-12 h-12 rounded-full outline outline-offset-2 outline-primary object-cover',
-    lg: 'w-16 h-16 rounded-full outline outline-offset-2 outline-primary',
+    lg: 'w-16 h-16 rounded-full outline outline-offset-2 outline-primary object-cover',
     xl: 'h-20 w-20 outline outline-offset-2 outline-primary rounded-full object-cover',
   }
 

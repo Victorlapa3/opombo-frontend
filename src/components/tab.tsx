@@ -34,10 +34,6 @@ export function Tab() {
         <UserIcon />
         <span>Perfil</span>
       </Button>
-
-      <Button className="font-bold text-lg h-12 flex rounded-full mb-6">
-        Postar
-      </Button>
     </CardContent>
   )
 }
