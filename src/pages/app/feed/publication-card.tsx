@@ -1,10 +1,11 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { CircleAlert, Heart } from 'lucide-react'
+import { CircleAlert, Heart, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
+import { deletePublication } from '@/api/delete-publication'
 import { Publication } from '@/api/fetch-publications'
 import { getAuthenticatedUser } from '@/api/get-authenticated-user'
 import { likePublication } from '@/api/like'
@@ -65,12 +66,21 @@ export function PublicationCard({ publication }: PublicationCardProps) {
 
   const isLiked = likes.some((user) => user.id === authenticatedUser?.id)
 
-  // const { mutateAsync: deletePub } = useMutation({
-  //   mutationFn: deletePublication,
-  // })
+  const { mutateAsync: deletePub } = useMutation({
+    mutationFn: deletePublication,
+  })
 
   if (publication.usuario.email === 'usuario1@usuario.com') {
     console.log(publication.usuario)
+  }
+
+  async function handleDeletePublication(publicationId: string) {
+    try {
+      await deletePub(publicationId)
+      window.location.reload()
+    } catch {
+      toast.error('Erro ao deletar pruu.')
+    }
   }
 
   return (
@@ -109,7 +119,16 @@ export function PublicationCard({ publication }: PublicationCardProps) {
           />
         )}
       </CardContent>
-      <CardFooter className="flex justify-end">
+      <CardFooter className="flex justify-between">
+        {publication.usuario.id === authenticatedUser?.id ? (
+          <Button
+            variant="ghost"
+            className="text-muted-foreground hover:text-rose-500 hover:bg-transparent p-0"
+            onClick={() => handleDeletePublication(publication.id)}
+          >
+            <Trash2 />
+          </Button>
+        ) : null}
         {!isLiked ? (
           <Button
             variant="ghost"
