@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 import { Publication } from '@/api/fetch-publications'
 import { getAuthenticatedUser } from '@/api/get-authenticated-user'
 import { likePublication } from '@/api/like'
+import { Avatar } from '@/components/avatar'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -26,8 +27,6 @@ export function PublicationCard({ publication }: PublicationCardProps) {
   // const navigate = useNavigate()
 
   const [likes, setLikes] = useState(publication.curtidas || [])
-
-  console.log(likes)
 
   const { data: authenticatedUser } = useQuery({
     queryKey: ['authenticatedUser'],
@@ -70,20 +69,15 @@ export function PublicationCard({ publication }: PublicationCardProps) {
   //   mutationFn: deletePublication,
   // })
 
+  if (publication.usuario.email === 'usuario1@usuario.com') {
+    console.log(publication.usuario)
+  }
+
   return (
     <Card className="w-full">
       <CardHeader className="flex flex-row justify-between items-center">
         <div className="flex flex-row items-center gap-4">
-          <img
-            src={`data:image/png;base64,${publication.usuario.fotoPerfil}`}
-            alt=""
-            className="h-8 w-8 rounded-full
-                        outline
-                        outline-2
-                        outline-offset-2
-                        outline-primary
-                        object-cover"
-          />
+          <Avatar src={publication.usuario.fotoPerfil} size="sm" />
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
               <CardTitle className="text-md">

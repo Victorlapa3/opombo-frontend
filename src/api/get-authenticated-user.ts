@@ -4,7 +4,7 @@ export interface Usuario {
   id: string
   nome: string
   email: string
-  fotoPerfil: string | null
+  fotoPerfil?: string | null
   criadoEm: string
 }
 
