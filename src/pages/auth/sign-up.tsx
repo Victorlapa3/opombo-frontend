@@ -1,35 +1,54 @@
+import { useMutation } from '@tanstack/react-query'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
+import { createUser } from '@/api/create-user'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
 const signUpForm = z.object({
-  name: z.string().min(2, 'O nome precisa ter pelo menos 2 caracteres'),
-  email: z.string().email('Digite um e-mail válido'),
-  password: z.string().min(6, 'A senha precisa ter pelo menos 6 caracteres'),
+  name: z.string(),
+  email: z.string().email(),
+  cpf: z.string(),
+  password: z.string(),
 })
 
 type SignUpForm = z.infer<typeof signUpForm>
 
 export function SignUp() {
   const navigate = useNavigate()
+
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting, errors },
-  } = useForm<SignUpForm>({
-    mode: 'onBlur',
+    formState: { isSubmitting },
+  } = useForm<SignUpForm>()
+
+  const { mutateAsync: registerUser } = useMutation({
+    mutationFn: createUser,
   })
 
-  // Função simulada para o envio do formulário
-  function handleSignUp(data: SignUpForm) {
-    // Apenas exibe os dados no console e mostra uma mensagem
-    console.log(data)
-    toast.success('Conta criada com sucesso!')
+  async function handleSignUp(data: SignUpForm) {
+    try {
+      await registerUser({
+        nome: data.name,
+        email: data.email,
+        cpf: data.cpf,
+        senha: data.password,
+      })
+
+      toast.success('Conta criada com sucesso!', {
+        action: {
+          label: 'Login',
+          onClick: () => navigate(`/sign-in?email=${data.email}`),
+        },
+      })
+    } catch {
+      toast.error('Credenciais inválidas.')
+    }
   }
 
   return (
@@ -56,9 +75,6 @@ export function SignUp() {
                   placeholder="Digite seu nome"
                   {...register('name')}
                 />
-                {errors.name && (
-                  <p className="text-sm text-red-500">{errors.name.message}</p>
-                )}
               </div>
 
               <div>
@@ -69,11 +85,16 @@ export function SignUp() {
                   placeholder="Digite seu e-mail"
                   {...register('email')}
                 />
-                {errors.email && (
-                  <p className="text-sm text-red-500">{errors.email.message}</p>
-                )}
               </div>
-
+              <div>
+                <p>CPF</p>
+                <Input
+                  id="cpf"
+                  type="number"
+                  placeholder="Digite seu CPF"
+                  {...register('cpf')}
+                />
+              </div>
               <div>
                 <p>Senha</p>
                 <Input
@@ -82,11 +103,6 @@ export function SignUp() {
                   placeholder="Digite sua senha"
                   {...register('password')}
                 />
-                {errors.password && (
-                  <p className="text-sm text-red-500">
-                    {errors.password.message}
-                  </p>
-                )}
               </div>
             </div>
 
@@ -94,9 +110,6 @@ export function SignUp() {
               disabled={isSubmitting}
               className="w-full bg-primary"
               type="submit"
-              onClick={() => {
-                navigate('/sign-in')
-              }}
             >
               Criar Conta
             </Button>
