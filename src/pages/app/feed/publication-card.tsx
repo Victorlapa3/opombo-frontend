@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { CircleAlert, Heart, Trash2 } from 'lucide-react'
+import { CircleAlert, Heart, Trash } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -126,7 +126,7 @@ export function PublicationCard({ publication }: PublicationCardProps) {
             className="text-muted-foreground hover:text-rose-500 hover:bg-transparent p-0"
             onClick={() => handleDeletePublication(publication.id)}
           >
-            <Trash2 />
+            <Trash />
           </Button>
         ) : null}
         {!isLiked ? (

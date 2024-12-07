@@ -2,12 +2,10 @@ import { LogOut } from 'lucide-react'
 import { createContext, useContext, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 
-import { DatePickerWithRange } from '@/components/calendar-with-range'
 import { MiniProfileCard } from '@/components/mini-profile-card'
 import { SearchAndFilters } from '@/components/search-and-filters'
 import { Tab } from '@/components/tab'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 
 interface FiltersContextType {
   filters: {
@@ -80,13 +78,6 @@ export function AppLayout() {
 
         <div className="flex flex-col border-l border-foreground/15 p-7 gap-3 sticky top-0 min-h-screen">
           <SearchAndFilters />
-
-          <Card className="text-lg font-semibold p-6">
-            <div className="flex items-center justify-between">
-              <span>Período da publicação:</span>
-              <DatePickerWithRange />
-            </div>
-          </Card>
         </div>
       </div>
     </FiltersContext.Provider>
