@@ -1,35 +1,60 @@
+import { useMutation } from '@tanstack/react-query'
+import { jwtDecode } from 'jwt-decode'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
+import { signIn } from '@/api/login'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
-const signUpForm = z.object({
-  name: z.string().min(2, 'O nome precisa ter pelo menos 2 caracteres'),
-  email: z.string().email('Digite um e-mail válido'),
-  password: z.string().min(6, 'A senha precisa ter pelo menos 6 caracteres'),
+const signInForm = z.object({
+  email: z.string().email(),
+  password: z.string(),
 })
 
-type SignUpForm = z.infer<typeof signUpForm>
+type SignInForm = z.infer<typeof signInForm>
 
 export function SignIn() {
   const navigate = useNavigate()
+
+  const [searchParams] = useSearchParams()
+
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting, errors },
-  } = useForm<SignUpForm>({
-    mode: 'onBlur',
+    formState: { isSubmitting },
+  } = useForm<SignInForm>({
+    defaultValues: {
+      email: searchParams.get('email') ?? '',
+    },
   })
 
-  // Função simulada para o envio do formulário
-  function handleSignUp(data: SignUpForm) {
-    // Apenas exibe os dados no console e mostra uma mensagem
-    console.log(data)
-    toast.success('Conta criada com sucesso!')
+  const { mutateAsync: authenticate } = useMutation({
+    mutationFn: signIn,
+  })
+
+  async function handleSignIn(data: SignInForm) {
+    try {
+      const response = await authenticate({
+        email: data.email,
+        password: data.password,
+      })
+
+      await localStorage.setItem('pombo-auth-token', response)
+
+      const a = jwtDecode(response)
+
+      if (a.sub?.includes('admin')) {
+        navigate('/admin')
+      } else {
+        navigate('/')
+      }
+    } catch {
+      toast.error('Credenciais inválidas.')
+    }
   }
 
   return (
@@ -46,7 +71,7 @@ export function SignIn() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit(handleSignUp)} className="space-y-4">
+          <form onSubmit={handleSubmit(handleSignIn)} className="space-y-4">
             <div className="space-y-2">
               <div>
                 <p>E-mail</p>
@@ -56,9 +81,6 @@ export function SignIn() {
                   placeholder="Digite seu e-mail"
                   {...register('email')}
                 />
-                {errors.email && (
-                  <p className="text-sm text-red-500">{errors.email.message}</p>
-                )}
               </div>
 
               <div>
@@ -69,11 +91,6 @@ export function SignIn() {
                   placeholder="Digite sua senha"
                   {...register('password')}
                 />
-                {errors.password && (
-                  <p className="text-sm text-red-500">
-                    {errors.password.message}
-                  </p>
-                )}
               </div>
             </div>
 
@@ -81,16 +98,14 @@ export function SignIn() {
               disabled={isSubmitting}
               className="w-full bg-primary"
               type="submit"
-              onClick={() => {
-                navigate('/')
-              }}
             >
               Entrar
             </Button>
           </form>
           <div className="text-center">
             <Link to="/sign-up" className="text-sm text-muted-foreground">
-              Não tem uma conta? Crie a sua agora
+              Não tem uma conta?{' '}
+              <span className="text-primary font-bold">Crie a sua agora</span>
             </Link>
           </div>
         </div>

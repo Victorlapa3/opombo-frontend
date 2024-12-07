@@ -62,6 +62,7 @@ export function AppLayout() {
                 variant="secondary"
                 className="w-full rounded-full text-rose-500 "
                 onClick={() => {
+                  localStorage.removeItem('pombo-auth-token')
                   navigate('/sign-in')
                 }}
               >
