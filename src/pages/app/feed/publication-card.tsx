@@ -1,3 +1,4 @@
+import { DialogTrigger } from '@radix-ui/react-dialog'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -19,6 +20,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Dialog } from '@/components/ui/dialog'
+
+import { ReportPublicationDialog } from './report-dialog'
 
 export interface PublicationCardProps {
   publication: Publication
@@ -105,9 +109,18 @@ export function PublicationCard({ publication }: PublicationCardProps) {
             </div>
           </div>
         </div>
-        <Button variant="ghost" className="ml-auto flex items-center gap-2 h-6">
-          <CircleAlert className="h-5 w-5 text-muted-foreground" />
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              variant="ghost"
+              className="ml-auto flex items-center gap-2 h-6"
+            >
+              <CircleAlert className="h-5 w-5 text-muted-foreground" />
+            </Button>
+          </DialogTrigger>
+
+          <ReportPublicationDialog publicationId={publication.id} />
+        </Dialog>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         {publication.conteudo}
