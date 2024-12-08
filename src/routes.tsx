@@ -3,7 +3,8 @@ import { createBrowserRouter } from 'react-router-dom'
 import { AdminLayout } from './pages/_layouts/admin.tsx'
 import { AppLayout } from './pages/_layouts/app'
 import { AuthLayout } from './pages/_layouts/auth'
-import { Complaints } from './pages/admin/complaints.tsx'
+import { Complaints } from './pages/admin/complaints/complaints.tsx'
+import { Details } from './pages/admin/details/details.tsx'
 import { Feed } from './pages/app/feed/feed'
 import { Profile } from './pages/app/profile/profile'
 import { SignIn } from './pages/auth/sign-in'
@@ -31,7 +32,7 @@ export const router = createBrowserRouter([
     element: <AdminLayout />,
     children: [
       { path: '/complaints', element: <Complaints /> },
-      { path: '/profile', element: <Profile /> },
+      { path: '/details', element: <Details /> },
     ],
   },
 ])
