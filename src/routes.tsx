@@ -32,7 +32,7 @@ export const router = createBrowserRouter([
     element: <AdminLayout />,
     children: [
       { path: '/complaints', element: <Complaints /> },
-      { path: '/details', element: <Details /> },
+      { path: '/details/:complaintId', element: <Details /> },
     ],
   },
 ])
